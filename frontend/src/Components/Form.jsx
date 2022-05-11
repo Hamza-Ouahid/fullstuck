@@ -83,7 +83,7 @@ const validationSchema = Yup.object({
                     
                      borderWidth="1px"
                       selected={values.intigration_date}
-                      dateFormat="MMMM d, yyyy"
+                      
                       className="form-control"
                       name="intigration_date"
                       onChange={date => setFieldValue('intigration_date', date)}
@@ -96,14 +96,15 @@ const validationSchema = Yup.object({
           shadow="1px 1px 3px rgba(0,0,0,0.3)">
           <DatePicker borderWidth="1px"
                       selected={values.birth_day}
-                      dateFormat="MMMM d, yyyy"
+                      
                       className="form-control"
                       name="birth_day"
                       onChange={date => setFieldValue('birth_day', date)}
                     />
         </Box>
-          <RadioGroupControl name="gender" label="gender">
-            <Radio value="Male">Male</Radio>
+          <RadioGroupControl name="gender" label="gender" defaultValue="Male" >
+            
+            <Radio value="Male" checked>Male</Radio>
             <Radio value="Female">Female</Radio>
           </RadioGroupControl>
           <NumberInputControl name="registration_number" label="registration number" />

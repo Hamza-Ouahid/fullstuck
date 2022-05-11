@@ -1,5 +1,6 @@
-import { Box,Text, ButtonGroup, Radio } from "@chakra-ui/react";
+import { Box,Text, ButtonGroup, Radio ,RadioGroup} from "@chakra-ui/react";
 import { Formik } from "formik";
+
 import {
   InputControl,
   NumberInputControl,
@@ -12,26 +13,51 @@ import * as React from "react";
 import * as Yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment'
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"
 
-const UpdateEmp = () => {
+const UpdateEmp = (props) => {
+  const [employee, setemployee] = useState("");
+  const params = useParams();
+  console.log(params.id)
+  useEffect(() => {
+    const getEmployee = async () => {
+      const employeesFromServer = await fetchEmployee();
+     
+      setemployee(employeesFromServer);
+    };
+    getEmployee();
+  }, []);
+  
+  const fetchEmployee = async () => {
+    const res = await fetch(`http://localhost:8080/employee/${params.id}`);
+    const data = await res.json();
+    return data;
+    
+  };
 
-const [employee, setemployee] = useState(undefined);
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const date1 = new Date(moment(employee.intigration_date).format() );
+console.log(employee.gender)
+const date2 = new Date(moment(employee.intigration_date).format() );
+console.log(date2)
+
 
 
 const initialValues = {
-first_name: "",
-last_name: "",
-address : "",
-intigration_date:"",
-birth_day:"",
-registration_number: "",
-business_unit: "",
-ssn: "",
-phone_number: "",
-position: "",
+first_name : employee.first_name,
+last_name: employee.last_name,
+address : employee.address,
+intigration_date: date1,
+birth_day:date2,
+gender:employee.gender,
+registration_number: employee.registration_number,
+business_unit: employee.business_unit,
+ssn: employee.ssn,
+phone_number: employee.phone_number,
+position:employee.position,
 };
 const validationSchema = Yup.object({
     first_name: Yup.string().required(),
@@ -39,6 +65,7 @@ const validationSchema = Yup.object({
     address: Yup.string().required(),
     intigration_date: Yup.date().required(),
     birth_day: Yup.date().required(),
+    gender:Yup.string().required(),
     registration_number: Yup.number().required().positive().integer(),
     business_unit: Yup.string().required(),
     ssn: Yup.number().required().positive().integer(),
@@ -49,8 +76,8 @@ const validationSchema = Yup.object({
    
     const onSubmit = (values) => {
         
-         fetch("http://localhost:8080/employee/add",{
-            method: "POST",
+         fetch(`http://localhost:8080/employee/${params.id}`,{
+            method: "PUT",
             headers: {"Content-type":"application/json"},
             body:JSON.stringify(values)
         }).then(()=>{console.log("success")}) ;
@@ -58,7 +85,9 @@ const validationSchema = Yup.object({
       
     
   return (
+   
     <Formik
+    enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}
@@ -80,10 +109,8 @@ const validationSchema = Yup.object({
          <Text>Birth day</Text>
          <Box borderWidth="1px"rounded="lg" shadow="1px 1px 3px rgba(0,0,0,0.3)">
          <DatePicker 
-                    
-                     borderWidth="1px"
+                      borderWidth="1px"
                       selected={values.intigration_date}
-                      dateFormat="MMMM d, yyyy"
                       className="form-control"
                       name="intigration_date"
                       onChange={date => setFieldValue('intigration_date', date)}
@@ -96,13 +123,12 @@ const validationSchema = Yup.object({
           shadow="1px 1px 3px rgba(0,0,0,0.3)">
           <DatePicker borderWidth="1px"
                       selected={values.birth_day}
-                      dateFormat="MMMM d, yyyy"
                       className="form-control"
                       name="birth_day"
                       onChange={date => setFieldValue('birth_day', date)}
                     />
         </Box>
-          <RadioGroupControl name="gender" label="gender">
+          <RadioGroupControl name="gender" label="gender" >
             <Radio value="Male">Male</Radio>
             <Radio value="Female">Female</Radio>
           </RadioGroupControl>
@@ -129,4 +155,4 @@ const validationSchema = Yup.object({
   );
 };
 
-export default UpdateEmp;
+export default UpdateEmp

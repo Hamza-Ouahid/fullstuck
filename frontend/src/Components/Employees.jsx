@@ -11,6 +11,7 @@ import {
   TableContainer,
   Button,
 } from '@chakra-ui/react'
+import { Link } from "react-router-dom";
 import { useState,useEffect } from "react";
 
 export default function Employees() {
@@ -66,7 +67,7 @@ export default function Employees() {
          <Td>{employee.phone_number}</Td>
          <Td>{employee.position}</Td>
          <Td>{employee.responsible}</Td>
-         <Td ><Button>Update</Button></Td>
+         <Td ><Link to={"Update/"+employee.id}><Button >Update</Button></Link></Td>
        </Tr>
         )
 
